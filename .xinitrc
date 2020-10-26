@@ -57,7 +57,7 @@ picom -f &
 #Wallpaper
 nitrogen --restore &
 
-
+flameshot &
 
 #loop
 
