@@ -1,0 +1,146 @@
+
+loadkeys pt-latin1 
+
+timedatectl set-ntp true
+
+lsblk - create partitions
+
+
+
+130 root@archiso ~ # lsblk
+NAME  MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+loop0   7:0    0 566.2M  1 loop /run/archiso/sfs/airootfs
+sda     8:0    0    20G  0 disk
+sr0    11:0    1   681M  0 rom  /run/archiso/bootmnt
+
+gdisk /dev/sda  ((Efi partition))
+
+Command (? for help): n
+Partition number (1-128, default 1):
+First sector (34-41943006, default = 2048) or {+-}size{KMGTP}:
+Last sector (2048-41943006, default = 41943006) or {+-}size{KMGTP}: +200M
+Current type is 8300 (Linux filesystem)
+Hex code or GUID (L to show codes, Enter = 8300): ef00
+Changed type of partition to 'EFI system partition'
+
+------((Rest of the space))
+
+Command (? for help): n
+Partition number (2-128, default 2):
+First sector (34-41943006, default = 411648) or {+-}size{KMGTP}:
+Last sector (411648-41943006, default = 41943006) or {+-}size{KMGTP}:
+Current type is 8300 (Linux filesystem)
+Hex code or GUID (L to show codes, Enter = 8300):
+Changed type of partition to 'Linux filesystem'
+
+To write changes to disk enter W and confirm with Y.
+
+root@archiso ~ # lsblk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+loop0    7:0    0 566.2M  1 loop /run/archiso/sfs/airootfs
+sda      8:0    0    20G  0 disk
+├─sda1   8:1    0   200M  0 part
+└─sda2   8:2    0  19.8G  0 part
+sr0     11:0    1   681M  0 rom  /run/archiso/bootmnt
+
+------Time to format partitions------
+
+mkfs.fat -F32 /dev/sda1
+
+mkfs.ext4 /dev/sda2
+
+mount /dev/sda2 /mnt
+
+mkdir -p /mnt/boot/efi
+
+mount /dev/sda1 /mnt/boot/efi
+
+pacstrap /mnt base linux linux-firmware vim
+
+genfstab -U /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt           ---------------> enter the main system
+
+dd if=/dev/zero of=/swapfile bs=1G count=2 status=progress
+
+chmod 600 /swapfile
+
+mkswap /swapfile
+
+swapon /swapfile
+
+vim /etc/fstab --------AND ENTER THE FOLLOWING LINE FOR SWAP-------
+/swapfile none swap defaults 0 0 
+
+ln -sf /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime
+
+hwclock --systohc
+
+vim /etc/locale.gen ------------------------uncommented en_US-utf8
+
+echo LANG=en_US.UTF-8 >> /etc/locale.conf
+
+echo KEYMAP=pt-latin1 >> /etc/vconsole.conf
+
+vim /etc/hostname---------------added the following
+arch
+
+vim /etc/hosts---------------added the following
+# Static table lookup for hostnames.
+# See hosts(5) for details.
+127.0.0.1       localhost                                                           ::1             localhost                                                           127.0.1.1       arch.localdomain        arch 
+
+
+passwd
+
+pacman -S grub efibootmgr base-devel linux-headers networkmanager network-manager-applet openssh git virtualbox-guest-utils
+
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+
+grub-mkconfig -o /boot/grub/grub.cfg
+
+systemctl enable NetworkManager &&  systemctl enable sshd
+
+useradd -mG wheel high
+
+passwd high
+
+EDITOR=vim visudo  ------Uncomment %wheel ALL=(ALL) ALL
+
+exit
+
+umount -a
+
+reboot
+------
+
+sudo pacman -S xf86-video-vmware xorg-server xorg-init xorg-xrandr nitrogen picom
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
