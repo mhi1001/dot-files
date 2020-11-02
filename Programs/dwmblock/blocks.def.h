@@ -2,11 +2,11 @@
 
 static const Block blocks[] = {
 	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
-	{"Mem:", "free -h | awk '/^Mem/ { print $3\"/\"$2 }' | sed s/i//g",	30,		0},
+	{" ", "free -h | awk '/^Mem/ { print $3\"/\"$2 }' | sed s/i//g",	1,		0},
 
 	{"", "/home/high/Scripts/time.sh",					5,		0},
 
-	{"","/home/high/Scripts/battery.sh",						1,		0},
+	{"","/home/high/Scripts/battery.sh",						30,		0},
 };
 
 //sets delimeter between status commands. NULL character ('\0') means no delimeter.
