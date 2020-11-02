@@ -53,11 +53,17 @@ setxkbmap pt &
 #Compositor
 picom -f &
 
+#XRANDR res
+
 
 #Wallpaper
 nitrogen --restore &
 
 flameshot &
+
+
+#Status bar not launching aaaaaa
+exec dwmblocks &
 
 #loop
 
@@ -66,6 +72,8 @@ while true; do
 done
 
 
+
 #exec dwm
-exec dwm
+exec dwm 
+
 
