@@ -8,13 +8,6 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 # merge in defaults and keymaps
 
 if [ -f $sysresources ]; then
-
-
-
-
-
-
-
     xrdb -merge $sysresources
 
 fi
@@ -24,13 +17,6 @@ if [ -f $sysmodmap ]; then
 fi
 
 if [ -f "$userresources" ]; then
-
-
-
-
-
-
-
     xrdb -merge "$userresources"
 
 fi
@@ -47,33 +33,13 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  done
  unset f
 fi
-#Keyboard PT
 setxkbmap pt &
-
-#Compositor
 picom -f &
-
-#XRANDR res
-
-
-#Wallpaper
 nitrogen --restore &
-
 flameshot &
-
-
-#Status bar not launching aaaaaa
 exec dwmblocks &
-
-#loop
-
 while true; do
 	dwm >/dev/null 2>&1
 done
-
-
-
-#exec dwm
-exec dwm 
 
 
